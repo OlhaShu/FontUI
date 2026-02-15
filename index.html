@@ -1,58 +1,16 @@
-import React, { useState } from 'react';
-import { Info, X, Check, Star, AlertTriangle } from 'lucide-react';
-
-const FontPairingMatrix = () => {
-  // Список шрифтів для заголовків (вертикаль)
-  const headerFonts = [
-    { name: 'Montserrat', type: 'Sans (Geo)', style: 'font-montserrat' },
-    { name: 'Playfair Display', type: 'Serif (High Contrast)', style: 'font-playfair' },
-    { name: 'Oswald', type: 'Sans (Condensed)', style: 'font-oswald' },
-    { name: 'Bebas Neue', type: 'Display (Caps)', style: 'font-bebas' },
-    { name: 'Roboto Slab', type: 'Slab Serif', style: 'font-roboto-slab' },
-    { name: 'Cinzel', type: 'Decorative', style: 'font-cinzel' },
-  ];
-
-  // Список шрифтів для основного тексту (горизонталь)
-  const bodyFonts = [
-    { name: 'Inter', type: 'Sans (Neutral)', style: 'font-inter' },
-    { name: 'Open Sans', type: 'Sans (Humanist)', style: 'font-open-sans' },
-    { name: 'Roboto', type: 'Sans (Neo-Grotesque)', style: 'font-roboto' },
-    { name: 'Merriweather', type: 'Serif (Readable)', style: 'font-merriweather' },
-    { name: 'Lora', type: 'Serif (Calligraphic)', style: 'font-lora' },
-  ];
-
-  // Матриця сумісності
-  // 0 = Погано (Bad), 1 = Нормально (Neutral), 2 = Добре (Good), 3 = Чудово (Great/Gold)
-  const compatibility = {
-    'Montserrat': { 'Inter': 1, 'Open Sans': 2, 'Roboto': 2, 'Merriweather': 3, 'Lora': 3 },
-    'Playfair Display': { 'Inter': 3, 'Open Sans': 3, 'Roboto': 2, 'Merriweather': 1, 'Lora': 1 }, // Serif header + Sans body is classic. Serif+Serif is risky.
-    'Oswald': { 'Inter': 2, 'Open Sans': 3, 'Roboto': 3, 'Merriweather': 2, 'Lora': 1 },
-    'Bebas Neue': { 'Inter': 2, 'Open Sans': 2, 'Roboto': 3, 'Merriweather': 1, 'Lora': 0 },
-    'Roboto Slab': { 'Inter': 2, 'Open Sans': 2, 'Roboto': 3, 'Merriweather': 0, 'Lora': 0 }, // Slab + Sans is good. Slab + Serif is clash.
-    'Cinzel': { 'Inter': 2, 'Open Sans': 1, 'Roboto': 1, 'Merriweather': 2, 'Lora': 3 }, // History + History
-  };
-
-  const getRating = (header, body) => {
-    return compatibility[header][body];
-  };
-
-  const getRatingData = (rating) => {
-    switch (rating) {
-      case 3: return { color: 'bg-emerald-500', icon: Star, text: 'Ідеально', desc: 'Високий контраст або перевірена класика.' };
-      case 2: return { color: 'bg-lime-400', icon: Check, text: 'Добре', desc: 'Безпечний вибір, читабельно і чисто.' };
-      case 1: return { color: 'bg-gray-200', icon: Info, text: 'Нейтрально', desc: 'Трохи нудно або не вистачає контрасту.' };
-      case 0: return { color: 'bg-red-400', icon: X, text: 'Не варто', desc: 'Конфлікт стилів або погана читабельність.' };
-      default: return { color: 'bg-gray-100', icon: Info, text: '-', desc: '' };
-    }
-  };
-
-  const [hoveredPair, setHoveredPair] = useState(null);
-
-  return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8 font-sans text-slate-800">
-      
-      {/* Google Fonts Import via style tag for preview accuracy */}
-      <style>{`
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Матриця Шрифтових Пар 2025</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <style>
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&family=Lora:ital,wght@0,400;1,400&family=Merriweather:wght@300;400;700&family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&family=Oswald:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto+Slab:wght@400;700&family=Roboto:wght@400;500&display=swap');
         
         .font-montserrat { font-family: 'Montserrat', sans-serif; }
@@ -67,135 +25,231 @@ const FontPairingMatrix = () => {
         .font-roboto { font-family: 'Roboto', sans-serif; }
         .font-merriweather { font-family: 'Merriweather', serif; }
         .font-lora { font-family: 'Lora', serif; }
-      `}</style>
 
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-slate-900">Матриця Шрифтових Пар 2025</h1>
-          <p className="text-slate-500">Наведіть на клітинку, щоб побачити деталі поєднання</p>
+        /* Custom transition for hover cells */
+        .cell-hovered {
+            transform: scale(1.1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            z-index: 20;
+            position: relative;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-slate-800 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2 text-slate-900">Матриця Шрифтових Пар 2025</h1>
+            <p class="text-slate-500">Наведіть на клітинку, щоб побачити деталі поєднання</p>
         </div>
 
-        {/* Legend */}
-        <div className="flex flex-wrap justify-center gap-4 mb-8 text-sm">
-          <div className="flex items-center gap-2"><div className="w-4 h-4 bg-emerald-500 rounded"></div><span>Ідеально (Контраст)</span></div>
-          <div className="flex items-center gap-2"><div className="w-4 h-4 bg-lime-400 rounded"></div><span>Добре (Безпечно)</span></div>
-          <div className="flex items-center gap-2"><div className="w-4 h-4 bg-gray-200 rounded border border-gray-300"></div><span>Нудно / Нейтрально</span></div>
-          <div className="flex items-center gap-2"><div className="w-4 h-4 bg-red-400 rounded"></div><span>Конфлікт (Не треба)</span></div>
+        <!-- Legend -->
+        <div class="flex flex-wrap justify-center gap-4 mb-8 text-sm">
+            <div class="flex items-center gap-2"><div class="w-4 h-4 bg-emerald-500 rounded"></div><span>Ідеально (Контраст)</span></div>
+            <div class="flex items-center gap-2"><div class="w-4 h-4 bg-lime-400 rounded"></div><span>Добре (Безпечно)</span></div>
+            <div class="flex items-center gap-2"><div class="w-4 h-4 bg-gray-200 rounded border border-gray-300"></div><span>Нудно / Нейтрально</span></div>
+            <div class="flex items-center gap-2"><div class="w-4 h-4 bg-red-400 rounded"></div><span>Конфлікт (Не треба)</span></div>
         </div>
 
-        {/* Matrix Container */}
-        <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-slate-200">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[800px]">
-              <thead>
-                <tr>
-                  <th className="p-4 bg-slate-100 border-b border-slate-200 w-1/6 h-40 align-bottom">
-                    <div className="flex flex-col items-end text-right h-full justify-between">
-                      <span className="text-xs text-slate-400 uppercase tracking-widest mb-1">Заголовок</span>
-                      {/* Fixed: Replaced '->' with arrow symbol to avoid JSX syntax error */}
-                      <span className="text-xs text-slate-400 uppercase tracking-widest rotate-90 origin-right translate-y-8 translate-x-4 whitespace-nowrap">Текстовий блок →</span>
-                    </div>
-                  </th>
-                  {bodyFonts.map((font) => (
-                    <th key={font.name} className="p-4 border-b border-l border-slate-100 text-left min-w-[140px] bg-slate-50 align-bottom">
-                      <div className={`text-lg font-bold text-slate-800 ${font.style}`}>{font.name}</div>
-                      <div className="text-xs text-slate-500 font-normal mt-1">{font.type}</div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {headerFonts.map((header) => (
-                  <tr key={header.name}>
-                    <th className="p-4 border-b border-slate-100 bg-slate-50 text-right sticky left-0 z-10">
-                      <div className={`text-xl md:text-2xl text-slate-800 leading-tight ${header.style}`}>{header.name}</div>
-                      <div className="text-xs text-slate-400 font-normal mt-1">{header.type}</div>
-                    </th>
-                    {bodyFonts.map((body) => {
-                      const rating = getRating(header.name, body.name);
-                      const data = getRatingData(rating);
-                      const isHovered = hoveredPair?.header === header.name && hoveredPair?.body === body.name;
-
-                      return (
-                        <td 
-                          key={`${header.name}-${body.name}`}
-                          className="border-b border-l border-slate-100 p-2 relative group cursor-pointer transition-all duration-200 hover:z-20"
-                          onMouseEnter={() => setHoveredPair({ header: header.name, body: body.name, rating, data })}
-                          onMouseLeave={() => setHoveredPair(null)}
-                        >
-                          <div className={`w-full h-16 md:h-20 rounded-lg flex items-center justify-center transition-all ${data.color} ${isHovered ? 'scale-110 shadow-lg ring-2 ring-blue-400' : 'opacity-90'}`}>
-                             {isHovered ? (
-                               <data.icon className="w-8 h-8 text-black/50" />
-                             ) : (
-                               <div className="w-4 h-4 rounded-full bg-white/30"></div>
-                             )}
-                          </div>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <!-- Matrix Container -->
+        <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-slate-200 mb-12">
+            <div class="overflow-x-auto">
+                <table class="w-full min-w-[800px]" id="matrix-table">
+                    <!-- Table content will be generated by JS -->
+                </table>
+            </div>
         </div>
 
-        {/* Live Preview Section */}
-        <div className="mt-12 grid md:grid-cols-2 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
-               <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6">Попередній перегляд обраної пари</h3>
-               
-               {hoveredPair ? (
-                 <div>
-                    <div className="flex items-center gap-3 mb-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${hoveredPair.data.color}`}>
-                            {hoveredPair.data.text}
-                        </span>
-                        <span className="text-sm text-slate-500">{hoveredPair.data.desc}</span>
-                    </div>
-
-                    <div className="border-l-4 border-indigo-500 pl-6 py-2">
-                        <h2 className={`text-4xl mb-4 text-slate-900 ${headerFonts.find(f => f.name === hoveredPair.header).style}`}>
-                            {hoveredPair.header}: Елегантний Заголовок
-                        </h2>
-                        <p className={`text-base leading-relaxed text-slate-600 ${bodyFonts.find(f => f.name === hoveredPair.body).style}`}>
-                            Це приклад тексту, набраного шрифтом {hoveredPair.body}. 
-                            Він використовується для масивів інформації, статей та описів. 
-                            У поєднанні з акцентним заголовком це створює візуальну гармонію.
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        </p>
-                    </div>
-                 </div>
-               ) : (
-                 <div className="h-40 flex flex-col items-center justify-center text-slate-400 border-2 border-dashed border-slate-200 rounded-lg">
-                    <Info className="w-8 h-8 mb-2 opacity-50"/>
+        <!-- Live Preview Section -->
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Preview Box -->
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200 min-h-[300px]" id="preview-container">
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6">Попередній перегляд обраної пари</h3>
+                
+                <!-- Placeholder State -->
+                <div id="preview-placeholder" class="h-40 flex flex-col items-center justify-center text-slate-400 border-2 border-dashed border-slate-200 rounded-lg">
+                    <i data-lucide="info" class="w-8 h-8 mb-2 opacity-50"></i>
                     <p>Наведіть на будь-який квадрат у таблиці</p>
-                 </div>
-               )}
+                </div>
+
+                <!-- Active State (Hidden by default) -->
+                <div id="preview-content" class="hidden">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span id="badge-rating" class="px-3 py-1 rounded-full text-xs font-bold text-white"></span>
+                        <span id="text-desc" class="text-sm text-slate-500"></span>
+                    </div>
+
+                    <div class="border-l-4 border-indigo-500 pl-6 py-2">
+                        <h2 id="preview-header" class="text-4xl mb-4 text-slate-900"></h2>
+                        <p id="preview-body" class="text-base leading-relaxed text-slate-600"></p>
+                    </div>
+                </div>
             </div>
 
-            <div className="bg-slate-900 text-white p-8 rounded-xl shadow-lg">
-               <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6">Чому це важливо?</h3>
-               <ul className="space-y-4 text-sm md:text-base">
-                   <li className="flex gap-3">
-                       <Star className="w-5 h-5 text-yellow-400 shrink-0" />
-                       <span><strong>Контраст:</strong> Поєднуйте шрифти з різним характером (наприклад, Антиква в заголовку + Гротеск в тексті).</span>
-                   </li>
-                   <li className="flex gap-3">
-                       <Check className="w-5 h-5 text-emerald-400 shrink-0" />
-                       <span><strong>Читабельність:</strong> Для основного тексту завжди обирайте шрифти з гарною читабельністю (Inter, Roboto, Merriweather).</span>
-                   </li>
-                   <li className="flex gap-3">
-                       <AlertTriangle className="w-5 h-5 text-red-400 shrink-0" />
-                       <span><strong>Уникайте схожості:</strong> Не поєднуйте два схожих гротеска (наприклад, Arial та Helvetica) — це виглядає як помилка.</span>
-                   </li>
-               </ul>
+            <!-- Info Box -->
+            <div class="bg-slate-900 text-white p-8 rounded-xl shadow-lg">
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6">Чому це важливо?</h3>
+                <ul class="space-y-4 text-sm md:text-base">
+                    <li class="flex gap-3">
+                        <i data-lucide="star" class="w-5 h-5 text-yellow-400 shrink-0"></i>
+                        <span><strong>Контраст:</strong> Поєднуйте шрифти з різним характером (наприклад, Антиква в заголовку + Гротеск в тексті).</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <i data-lucide="check" class="w-5 h-5 text-emerald-400 shrink-0"></i>
+                        <span><strong>Читабельність:</strong> Для основного тексту завжди обирайте шрифти з гарною читабельністю (Inter, Roboto, Merriweather).</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400 shrink-0"></i>
+                        <span><strong>Уникайте схожості:</strong> Не поєднуйте два схожих гротеска (наприклад, Arial та Helvetica) — це виглядає як помилка.</span>
+                    </li>
+                </ul>
             </div>
         </div>
-
-      </div>
     </div>
-  );
-};
 
-export default FontPairingMatrix;
+    <script>
+        // Data Structures
+        const headerFonts = [
+            { name: 'Montserrat', type: 'Sans (Geo)', style: 'font-montserrat' },
+            { name: 'Playfair Display', type: 'Serif (High Contrast)', style: 'font-playfair' },
+            { name: 'Oswald', type: 'Sans (Condensed)', style: 'font-oswald' },
+            { name: 'Bebas Neue', type: 'Display (Caps)', style: 'font-bebas' },
+            { name: 'Roboto Slab', type: 'Slab Serif', style: 'font-roboto-slab' },
+            { name: 'Cinzel', type: 'Decorative', style: 'font-cinzel' },
+        ];
+
+        const bodyFonts = [
+            { name: 'Inter', type: 'Sans (Neutral)', style: 'font-inter' },
+            { name: 'Open Sans', type: 'Sans (Humanist)', style: 'font-open-sans' },
+            { name: 'Roboto', type: 'Sans (Neo-Grotesque)', style: 'font-roboto' },
+            { name: 'Merriweather', type: 'Serif (Readable)', style: 'font-merriweather' },
+            { name: 'Lora', type: 'Serif (Calligraphic)', style: 'font-lora' },
+        ];
+
+        const compatibility = {
+            'Montserrat': { 'Inter': 1, 'Open Sans': 2, 'Roboto': 2, 'Merriweather': 3, 'Lora': 3 },
+            'Playfair Display': { 'Inter': 3, 'Open Sans': 3, 'Roboto': 2, 'Merriweather': 1, 'Lora': 1 },
+            'Oswald': { 'Inter': 2, 'Open Sans': 3, 'Roboto': 3, 'Merriweather': 2, 'Lora': 1 },
+            'Bebas Neue': { 'Inter': 2, 'Open Sans': 2, 'Roboto': 3, 'Merriweather': 1, 'Lora': 0 },
+            'Roboto Slab': { 'Inter': 2, 'Open Sans': 2, 'Roboto': 3, 'Merriweather': 0, 'Lora': 0 },
+            'Cinzel': { 'Inter': 2, 'Open Sans': 1, 'Roboto': 1, 'Merriweather': 2, 'Lora': 3 },
+        };
+
+        // Helper Functions
+        const getRatingData = (rating) => {
+            switch (rating) {
+                case 3: return { color: 'bg-emerald-500', icon: 'star', text: 'Ідеально', textClass: 'bg-emerald-500', desc: 'Високий контраст або перевірена класика.' };
+                case 2: return { color: 'bg-lime-400', icon: 'check', text: 'Добре', textClass: 'bg-lime-400', desc: 'Безпечний вибір, читабельно і чисто.' };
+                case 1: return { color: 'bg-gray-200', icon: 'info', text: 'Нейтрально', textClass: 'bg-gray-400', desc: 'Трохи нудно або не вистачає контрасту.' };
+                case 0: return { color: 'bg-red-400', icon: 'x', text: 'Не варто', textClass: 'bg-red-400', desc: 'Конфлікт стилів або погана читабельність.' };
+                default: return { color: 'bg-gray-100', icon: 'info', text: '-', textClass: 'bg-gray-300', desc: '' };
+            }
+        };
+
+        // DOM Elements
+        const table = document.getElementById('matrix-table');
+        const previewPlaceholder = document.getElementById('preview-placeholder');
+        const previewContent = document.getElementById('preview-content');
+        const previewHeader = document.getElementById('preview-header');
+        const previewBody = document.getElementById('preview-body');
+        const badgeRating = document.getElementById('badge-rating');
+        const textDesc = document.getElementById('text-desc');
+
+        // Render Table
+        function renderTable() {
+            // Header Row
+            let thead = `<thead><tr>
+                <th class="p-4 bg-slate-100 border-b border-slate-200 w-1/6 h-40 align-bottom">
+                    <div class="flex flex-col items-end text-right h-full justify-between">
+                        <span class="text-xs text-slate-400 uppercase tracking-widest mb-1">Заголовок</span>
+                        <span class="text-xs text-slate-400 uppercase tracking-widest rotate-90 origin-right translate-y-8 translate-x-4 whitespace-nowrap">Текстовий блок →</span>
+                    </div>
+                </th>`;
+            
+            bodyFonts.forEach(font => {
+                thead += `<th class="p-4 border-b border-l border-slate-100 text-left min-w-[140px] bg-slate-50 align-bottom">
+                    <div class="text-lg font-bold text-slate-800 ${font.style}">${font.name}</div>
+                    <div class="text-xs text-slate-500 font-normal mt-1">${font.type}</div>
+                </th>`;
+            });
+            thead += `</tr></thead>`;
+
+            // Body Rows
+            let tbody = `<tbody>`;
+            headerFonts.forEach(header => {
+                tbody += `<tr>
+                    <th class="p-4 border-b border-slate-100 bg-slate-50 text-right sticky left-0 z-10">
+                        <div class="text-xl md:text-2xl text-slate-800 leading-tight ${header.style}">${header.name}</div>
+                        <div class="text-xs text-slate-400 font-normal mt-1">${header.type}</div>
+                    </th>`;
+                
+                bodyFonts.forEach(body => {
+                    const rating = compatibility[header.name][body.name];
+                    const data = getRatingData(rating);
+                    
+                    tbody += `<td class="border-b border-l border-slate-100 p-2 relative group cursor-pointer" 
+                                  onmouseenter="handleHover('${header.name}', '${body.name}', ${rating}, this)"
+                                  onmouseleave="handleLeave(this)">
+                        <div class="w-full h-16 md:h-20 rounded-lg flex items-center justify-center transition-all ${data.color} cell-content">
+                            <div class="w-4 h-4 rounded-full bg-white/30 indicator"></div>
+                            <i data-lucide="${data.icon}" class="w-8 h-8 text-black/50 hidden icon-active"></i>
+                        </div>
+                    </td>`;
+                });
+                tbody += `</tr>`;
+            });
+            tbody += `</tbody>`;
+
+            table.innerHTML = thead + tbody;
+            
+            // Re-initialize icons for newly added elements
+            lucide.createIcons();
+        }
+
+        // Event Handlers
+        window.handleHover = function(headerName, bodyName, rating, cell) {
+            const data = getRatingData(rating);
+            const headerFont = headerFonts.find(f => f.name === headerName);
+            const bodyFont = bodyFonts.find(f => f.name === bodyName);
+
+            // UI Update: Cell
+            const cellDiv = cell.querySelector('.cell-content');
+            cellDiv.classList.add('scale-110', 'shadow-lg', 'ring-2', 'ring-blue-400', 'z-20', 'relative');
+            cell.querySelector('.indicator').classList.add('hidden');
+            cell.querySelector('.icon-active').classList.remove('hidden');
+
+            // UI Update: Preview
+            previewPlaceholder.classList.add('hidden');
+            previewContent.classList.remove('hidden');
+
+            badgeRating.textContent = data.text;
+            badgeRating.className = `px-3 py-1 rounded-full text-xs font-bold text-white ${data.textClass}`;
+            
+            textDesc.textContent = data.desc;
+            
+            previewHeader.textContent = `${headerName}: Елегантний Заголовок`;
+            previewHeader.className = `text-4xl mb-4 text-slate-900 ${headerFont.style}`;
+            
+            previewBody.textContent = `Це приклад тексту, набраного шрифтом ${bodyName}. Він використовується для масивів інформації, статей та описів. У поєднанні з акцентним заголовком це створює візуальну гармонію. Lorem ipsum dolor sit amet.`;
+            previewBody.className = `text-base leading-relaxed text-slate-600 ${bodyFont.style}`;
+        };
+
+        window.handleLeave = function(cell) {
+            // UI Update: Cell Reset
+            const cellDiv = cell.querySelector('.cell-content');
+            cellDiv.classList.remove('scale-110', 'shadow-lg', 'ring-2', 'ring-blue-400', 'z-20', 'relative');
+            cell.querySelector('.indicator').classList.remove('hidden');
+            cell.querySelector('.icon-active').classList.add('hidden');
+            
+            // UI Update: Preview Reset
+            previewPlaceholder.classList.remove('hidden');
+            previewContent.classList.add('hidden');
+        };
+
+        // Init
+        renderTable();
+        lucide.createIcons();
+    </script>
+</body>
+</html>
